@@ -54,6 +54,34 @@ class Tests: XCTestCase {
             XCTAssertEqual(number, 100)
             expectation.fulfill()
         }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+    
+    func testChainingSimplified() {
+        let expectation = XCTestExpectation(description: "Test chaining simplified")
+
+        func work1(_ string: String) -> Promise<String> {
+            return Promise { resolve, _ in
+                resolve(string)
+            }
+        }
+
+        func work2(_ string: String) -> Promise<Int> {
+            return Promise { resolve, _ in
+                resolve(Int(string) ?? 0)
+            }
+        }
+
+        func work3(_ number: Int) -> Int {
+            return number * number
+        }
+
+        work1("10").then(work2).then(work3).then { number in
+            XCTAssertEqual(number, 100)
+            expectation.fulfill()
+        }
+
         self.wait(for: [expectation], timeout: 10)
     }
 }
