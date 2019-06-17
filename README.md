@@ -54,6 +54,16 @@ And run ```pod install```.
 The following defines a Promise that will resolve with the value `15`.
 
 ``` swift
+let promise = Promise<Int> (15)
+
+...
+
+let promise = Promise<Int> {
+  return 15
+}
+
+...
+
 let promise = Promise<Int> { resolve, _ in
   resolve(15)
 }
@@ -62,8 +72,20 @@ let promise = Promise<Int> { resolve, _ in
 Promises can also reject with an `Error`.
 
 ``` swift
+let error = NSError(domain: "Error", code: -500, userInfo: [:])
+
+let promise = Promise<Int> (error)
+
+...
+
+let promise = Promise<Int> {
+  return error
+}
+
+...
+
 let promise = Promise<Int> { _, reject in
-  reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+  reject(error)
 }
 ```
 
