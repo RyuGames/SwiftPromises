@@ -8,7 +8,7 @@
 
 import Foundation
 
-public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promise<[Value]> {
+public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Promise<[Value]> {
     return Promise<[Value]> { resolve, reject in
         if promises.count == 0 {
             resolve([])
@@ -37,7 +37,7 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promi
             })
         }
 
-        promiseQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: {
+        promiseQueue.asyncAfter(deadline: .now() + .milliseconds(timeout), execute: {
             if !resolved {
                 resolved = true
                 reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))

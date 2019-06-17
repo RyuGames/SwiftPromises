@@ -16,31 +16,31 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all")
 
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 3, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.3, execute: {
                 resolve(15)
             })
         }
 
         let promise2 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 3, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.3, execute: {
                 resolve(4)
             })
         }
 
         let promise3 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 resolve(55)
             })
         }
 
         let promise4 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
                 resolve(1)
             })
         }
 
         let promise5 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
                 resolve(11)
             })
         }
@@ -67,7 +67,7 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all catch")
 
         let promise = Promise<Int> { resolve, reject in
-            promiseQueue.asyncAfter(deadline: .now() + 2, execute: {
+            promiseQueue.asyncAfter(deadline: .now() + 0.2, execute: {
                 reject(NSError(domain: "Error", code: -500, userInfo: [:]))
             })
         }
@@ -104,18 +104,18 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all with timeout")
 
         let promise1 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                 resolve(1)
             })
         }
 
         let promise2 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                 resolve(11)
             })
         }
 
-        all([promise1, promise2], timeout: 1).then ({ (numbers) in
+        all([promise1, promise2], timeout: 100).then ({ (numbers) in
             XCTFail()
             expectation.fulfill()
         }).catch ({ (err) in
@@ -130,7 +130,7 @@ class Tests: XCTestCase {
 
     func testAwait() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 resolve(1)
             })
         }
@@ -145,7 +145,7 @@ class Tests: XCTestCase {
 
     func testAwaitMultiple() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 resolve(15)
             })
         }
@@ -157,7 +157,7 @@ class Tests: XCTestCase {
         }
 
         let promise3 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 resolve(55)
             })
         }
@@ -169,7 +169,7 @@ class Tests: XCTestCase {
         }
 
         let promise5 = Promise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 resolve(11)
             })
         }
@@ -206,7 +206,7 @@ class Tests: XCTestCase {
 
     func testAwaitReject() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
                 reject(NSError(domain: "Error", code: -500, userInfo: [:]))
             })
         }
@@ -243,7 +243,7 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test catching")
 
         let promise = Promise<Bool> { _, reject in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
                 reject(NSError(domain: "Error", code: -500, userInfo: [:]))
             })
         }
