@@ -16,6 +16,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		7FCD082E22B7234400D387D6 /* SwiftPromises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD082D22B7234400D387D6 /* SwiftPromises.swift */; };
+		7FCD082F22B7234400D387D6 /* SwiftPromises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD082D22B7234400D387D6 /* SwiftPromises.swift */; };
 		CAA0E57859B9D3C96933701D /* Pods_SwiftPromises_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CE72DDC06BBF1C32E1B3A6A /* Pods_SwiftPromises_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +52,7 @@
 		6CE72DDC06BBF1C32E1B3A6A /* Pods_SwiftPromises_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftPromises_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		722A16A5FA556212C5F77133 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		7543DA0B9A6495E9CA73F6E1 /* Pods-NetworkUtils_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkUtils_Example.debug.xcconfig"; path = "Target Support Files/Pods-NetworkUtils_Example/Pods-NetworkUtils_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		7FCD082D22B7234400D387D6 /* SwiftPromises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftPromises.swift; path = SwiftPromises/Classes/SwiftPromises.swift; sourceTree = SOURCE_ROOT; };
 		83F467E8786051FA2F14C2B9 /* Pods-NetworkUtils_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkUtils_Tests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkUtils_Tests/Pods-NetworkUtils_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		9BB51C9B780BB599F3BCC51A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CB9CA8DE06866B4AE381D618 /* Pods_NetworkUtils_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkUtils_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,6 +170,7 @@
 		7F9B40E921B4377E001D8885 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				7FCD082D22B7234400D387D6 /* SwiftPromises.swift */,
 			);
 			name = Classes;
 			path = NetworkUtils/Classes;
@@ -231,7 +235,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = CocoaPods;
+				ORGANIZATIONNAME = "Ryu Blockchain Technologies";
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -336,6 +340,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FCD082E22B7234400D387D6 /* SwiftPromises.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
@@ -346,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+				7FCD082F22B7234400D387D6 /* SwiftPromises.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
