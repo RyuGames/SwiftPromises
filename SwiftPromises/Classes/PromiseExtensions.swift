@@ -17,7 +17,7 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promi
 
         var resolved: Bool = false
         for promise in promises {
-            promise.then { _ in
+            promise.then ({ _ in
                 var done = true
                 for p in promises {
                     if case .pending = p.state {
@@ -29,12 +29,12 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promi
                     resolved = true
                     resolve(promises.map { $0.val! })
                 }
-            }.catch { err in
+            }).catch ({ err in
                 if !resolved {
                     resolved = true
                     reject(err)
                 }
-            }
+            })
         }
 
         promiseQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: {

@@ -26,37 +26,49 @@ public final class Promise<Value> {
         return nil
     }
 
-    private var callback: ((Value) -> Void)? = nil
-    private var errorCallback: ((Error) -> Void)? = nil
+    public typealias Then = (Value) -> Void
+    public typealias Catch = (Error) -> Void
+
+    private var callback: Then? = nil
+    private var errorCallback: Catch? = nil
     private var dispatchQueue: DispatchQueue = promiseQueue
 
-    public init(dispatchQueue: DispatchQueue = promiseQueue, executor: (_ resolve: @escaping (Value) -> Void, _ reject: @escaping (Error) -> Void) -> Void) {
+    public init(dispatchQueue: DispatchQueue = promiseQueue, executor: (_ resolve: @escaping Then, _ reject: @escaping Catch) -> Void) {
         self.dispatchQueue = dispatchQueue
         executor(resolve, reject)
     }
 
-    public func then(_ onResolved: @escaping (Value) -> Void) {
+    // Then - Observe
+    public func then(_ onResolved: @escaping Then, _ onRejected: @escaping Catch = { _ in }) {
         callback = onResolved
         triggerCallbacksIfResolved()
+        errorCallback = onRejected
+        triggerErrorCallbacksIfRejected()
     }
 
+    // Then - Flat Map
     public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
         return Promise<NewValue> { resolve, reject in
-            then { value in
-                onResolved(value).then(resolve)
-            }
+            then({ (value) in
+                onResolved(value).then(resolve).catch(reject)
+            }, { (error) in
+                reject(error)
+            })
         }
     }
 
+    // Then - Map
     public func then<NewValue>(_ onResolved: @escaping (Value) -> NewValue) -> Promise<NewValue> {
-        return then { value in
-            return Promise<NewValue> { resolve, _ in
-                resolve(onResolved(value))
-            }
+        return Promise<NewValue> { resolve, reject in
+            return then({ (val) in
+                resolve(onResolved(val))
+            }, { (error) in
+                reject(error)
+            })
         }
     }
 
-    public func `catch`(_ onRejected: @escaping (Error) -> Void) {
+    public func `catch`(_ onRejected: @escaping Catch) {
         errorCallback = onRejected
         triggerErrorCallbacksIfRejected()
     }
