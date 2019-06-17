@@ -16,29 +16,31 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all")
 
         let promise = Promise<Int> { resolve, _ in
-            resolve(15)
+            DispatchQueue.global().asyncAfter(deadline: .now() + 3, execute: {
+                resolve(15)
+            })
         }
 
         let promise2 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 3, execute: {
                 resolve(4)
             })
         }
 
         let promise3 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
                 resolve(55)
             })
         }
 
         let promise4 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
                 resolve(1)
             })
         }
 
         let promise5 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
                 resolve(11)
             })
         }
@@ -54,6 +56,71 @@ class Tests: XCTestCase {
             expectation.fulfill()
         }.catch { (err) in
             XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAllCatch() {
+        let expectation = XCTestExpectation(description: "Test all catch")
+
+        let promise = Promise<Int> { resolve, reject in
+            promiseQueue.asyncAfter(deadline: .now() + 2, execute: {
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            })
+        }
+
+        all([promise]).then { _ in
+            XCTFail()
+            expectation.fulfill()
+        }.catch { (err) in
+            let err = err as NSError
+            let message = err.domain
+            XCTAssertEqual(message, "Error")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAllEmpty() {
+        let expectation = XCTestExpectation(description: "Test all empty")
+
+        let promises: [Promise<Any>] = []
+        all(promises).then { (numbers) in
+            XCTAssertEqual(numbers.count, 0)
+            expectation.fulfill()
+        }.catch { (err) in
+            XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAllTimeout() {
+        let expectation = XCTestExpectation(description: "Test all with timeout")
+
+        let promise1 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                resolve(1)
+            })
+        }
+
+        let promise2 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                resolve(11)
+            })
+        }
+
+        all([promise1, promise2], timeout: 1).then { (numbers) in
+            XCTFail()
+            expectation.fulfill()
+        }.catch { (err) in
+            let err = err as NSError
+            let message = err.domain
+            XCTAssertEqual(message, "Timeout")
             expectation.fulfill()
         }
 
@@ -79,10 +146,42 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test catching")
 
         let promise = Promise<Bool> { _, reject in
-            reject(NSError(domain: "", code: 0, userInfo: [:]))
+            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: {
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            })
         }
 
         promise.catch { _ in
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testChainCatching() {
+        let expectation = XCTestExpectation(description: "Test chaining catching")
+
+        func work1(_ string: String) -> Promise<String> {
+            return Promise { resolve, _ in
+                resolve(string)
+            }
+        }
+
+        func work2(_ string: String) -> Promise<Int> {
+            return Promise { _, reject in
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            }
+        }
+
+        work1("10").then { string in
+            return work2(string)
+        }.then { number in
+            XCTFail()
+            expectation.fulfill()
+        }.catch { err in
+            let err = err as NSError
+            let message = err.domain
+            XCTAssertEqual(message, "Error")
             expectation.fulfill()
         }
 

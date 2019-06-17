@@ -8,6 +8,8 @@
 
 import Foundation
 
+public let promiseQueue: DispatchQueue = .global()
+
 public final class Promise<Value> {
 
     private enum State<T> {
@@ -19,9 +21,9 @@ public final class Promise<Value> {
     private var state: State<Value> = .pending
     private var callback: ((Value) -> Void)? = nil
     private var errorCallback: ((Error) -> Void)? = nil
-    private var dispatchQueue: DispatchQueue = .global()
+    private var dispatchQueue: DispatchQueue = promiseQueue
 
-    public init(dispatchQueue: DispatchQueue = .global(), executor: (_ resolve: @escaping (Value) -> Void, _ reject: @escaping (Error) -> Void) -> Void) {
+    public init(dispatchQueue: DispatchQueue = promiseQueue, executor: (_ resolve: @escaping (Value) -> Void, _ reject: @escaping (Error) -> Void) -> Void) {
         self.dispatchQueue = dispatchQueue
         executor(resolve, reject)
     }
@@ -34,7 +36,11 @@ public final class Promise<Value> {
     public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
         return Promise<NewValue> { resolve, reject in
             then { value in
-                onResolved(value).then(resolve).catch(reject)
+                onResolved(value).then { v in
+                    resolve(v)
+                }.catch { e in
+                    reject(e)
+                }
             }
         }
     }
@@ -53,27 +59,18 @@ public final class Promise<Value> {
     }
 
     private func reject(error: Error) {
-        if updateState(to: .rejected(error)) {
-            guard let errorCallback = errorCallback else { return }
-            dispatchQueue.async {
-                errorCallback(error)
-            }
-        }
+        updateState(to: .rejected(error))
+        triggerErrorCallbacksIfRejected()
     }
 
     private func resolve(value: Value) {
-        if updateState(to: .resolved(value)) {
-            guard let callback = callback else { return }
-            dispatchQueue.async {
-                callback(value)
-            }
-        }
+        updateState(to: .resolved(value))
+        triggerCallbacksIfResolved()
     }
 
-    private func updateState(to newState: State<Value>) -> Bool {
-        guard case .pending = state else { return false }
+    private func updateState(to newState: State<Value>) {
+        guard case .pending = state else { return }
         state = newState
-        return true
     }
 
     private func triggerCallbacksIfResolved() {

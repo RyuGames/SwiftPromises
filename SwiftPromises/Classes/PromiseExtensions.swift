@@ -8,23 +8,27 @@
 
 import Foundation
 
-public func all<Value>(_ promises: [Promise<Value>]) -> Promise<[Value]> {
+public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promise<[Value]> {
     return Promise<[Value]> { resolve, reject in
         var results: [Value] = []
-        var count = 0
-        let length = promises.count
+        let dispatchGroup = DispatchGroup()
+
         for promise in promises {
-            promise
-                .then { val in
+            dispatchGroup.enter()
+            promise.then { val in
                     results.append(val)
-                    count += 1
-                    if count == length {
-                        resolve(results)
-                    }
-                }
-                .catch { err in
+                    dispatchGroup.leave()
+                }.catch { err in
                     reject(err)
-            }
+                }
+        }
+
+        promiseQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: {
+            reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))
+        })
+
+        dispatchGroup.notify(queue: promiseQueue) {
+            resolve(results)
         }
     }
 }
