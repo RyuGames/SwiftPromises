@@ -24,6 +24,7 @@ Light-weight Promise package for Swift
   - [Chaining](#chaining)
   - [All](#all)
   - [Await](#await)
+- [Contributing](#contributing)
 - [Author](#author)
 - [License](#license)
 
@@ -162,7 +163,11 @@ guard let value = try? await(promise: promise) else { return }
 print(value) // Prints 1 after one second has passed
 ```
 
-Note that the `Await` function should only be called with global threads to prevent deadlocking. 
+Note that the `Await` function should only be called with global threads to prevent deadlocking.
+
+## Contributing
+
+We welcome contributors to `SwiftPromises`. Before beginning, please take a look at our [contributing guidelines](./CONTRIBUTING.md).
 
 ## Author
 
