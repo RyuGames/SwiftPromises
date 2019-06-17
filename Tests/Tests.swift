@@ -27,6 +27,20 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testCatching() {
+        let expectation = XCTestExpectation(description: "Test catching")
+
+        let promise = Promise<Bool> { _, reject in
+            reject(NSError(domain: "", code: 0, userInfo: [:]))
+        }
+
+        promise.catch { _ in
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testChainPromises() {
         let expectation = XCTestExpectation(description: "Test chaining promises")
 
