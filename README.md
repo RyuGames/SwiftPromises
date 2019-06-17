@@ -98,9 +98,9 @@ let promise = Promise<Int> { resolve, _ in
   resolve(1)
 }
 
-promise.then ({ (num) in
+promise.then { (num) in
   print(num) // Prints 1
-})
+}
 ```
 
 ### Catch
@@ -140,13 +140,13 @@ func work3(_ number: Int) -> Int {
   return number * number
 }
 
-work1("10").then ({ string in
+work1("10").then { string in
   return work2(string)
-}).then ({ number in
+}.then { number in
   return work3(number)
-}).then ({ number in
+}.then { number in
   print(number) // Prints 100
-})
+}
 ```
 
 ### All
@@ -162,15 +162,15 @@ let promise2 = Promise<Int> { resolve, _ in
   resolve(4)
 }
 
-all([promise, promise2]).then ({ (numbers) in
+all([promise, promise2]).then { (numbers) in
   var total = 0
   for number in numbers {
       total += number
   }
   print(total) // Prints 19
-}).catch ({ (err) in
+}.catch { (err) in
   // Not called in this example
-})
+}
 ```
 
 ### Await
