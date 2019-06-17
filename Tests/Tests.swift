@@ -419,4 +419,29 @@ class Tests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 10)
     }
+
+    func testSyntax() {
+        let expectation = XCTestExpectation(description: "Test promise syntax")
+
+        let promise1 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
+                resolve(10)
+            })
+        }
+
+        let promise2 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
+                resolve(5)
+            })
+        }
+        
+        promise1.then { (val1) in
+            promise2.then({ val2 in
+                XCTAssertEqual(val1 + val2, 15)
+                expectation.fulfill()
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
 }
