@@ -10,6 +10,7 @@
 		18ABBFB597EB13D9134382FA /* Pods_SwiftPromises_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2EAD25871DF4E02C1CC215E /* Pods_SwiftPromises_Tests.framework */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		7FCD082F22B7234400D387D6 /* SwiftPromises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD082D22B7234400D387D6 /* SwiftPromises.swift */; };
+		7FCD083122B750F700D387D6 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD083022B750F700D387D6 /* PromiseExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		722A16A5FA556212C5F77133 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		7FB5B30C6BCB970D1D92FDA0 /* Pods-SwiftPromises_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftPromises_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SwiftPromises_Tests/Pods-SwiftPromises_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		7FCD082D22B7234400D387D6 /* SwiftPromises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftPromises.swift; path = SwiftPromises/Classes/SwiftPromises.swift; sourceTree = SOURCE_ROOT; };
+		7FCD083022B750F700D387D6 /* PromiseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PromiseExtensions.swift; path = SwiftPromises/Classes/PromiseExtensions.swift; sourceTree = SOURCE_ROOT; };
 		94C3D3DBD81877287F998F89 /* Pods-SwiftPromises_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftPromises_Tests.release.xcconfig"; path = "Target Support Files/Pods-SwiftPromises_Tests/Pods-SwiftPromises_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		9BB51C9B780BB599F3BCC51A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F2EAD25871DF4E02C1CC215E /* Pods_SwiftPromises_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftPromises_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				7FCD082D22B7234400D387D6 /* SwiftPromises.swift */,
+				7FCD083022B750F700D387D6 /* PromiseExtensions.swift */,
 			);
 			name = Classes;
 			path = NetworkUtils/Classes;
@@ -208,6 +211,7 @@
 			files = (
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
 				7FCD082F22B7234400D387D6 /* SwiftPromises.swift in Sources */,
+				7FCD083122B750F700D387D6 /* PromiseExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

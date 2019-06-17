@@ -12,6 +12,54 @@ class Tests: XCTestCase {
         super.tearDown()
     }
 
+    func testAll() {
+        let expectation = XCTestExpectation(description: "Test all")
+
+        let promise = Promise<Int> { resolve, _ in
+            resolve(15)
+        }
+
+        let promise2 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                resolve(4)
+            })
+        }
+
+        let promise3 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                resolve(55)
+            })
+        }
+
+        let promise4 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                resolve(1)
+            })
+        }
+
+        let promise5 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                resolve(11)
+            })
+        }
+
+        let expected: Int = 15 + 4 + 55 + 1 + 11
+        all([promise, promise2, promise3, promise4, promise5]).then { (numbers) in
+            var total = 0
+            for number in numbers {
+                total += number
+            }
+
+            XCTAssertEqual(total, expected)
+            expectation.fulfill()
+        }.catch { (err) in
+            XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testBasicPromise() {
         let expectation = XCTestExpectation(description: "Test basic promise")
 
