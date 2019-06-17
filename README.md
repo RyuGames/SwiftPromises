@@ -34,6 +34,8 @@ Light-weight Promise package for Swift
 
 A Promise is an object representing the eventual completion/failure of an asynchronous operation. While it is available natively in some languages, it is not currently supported out of the box in Swift.
 
+Inspired by [Pierre Felgines' article "Implementing Promises in Swift"](https://felginep.github.io/2019-01-06/implementing-promises-in-swift), [Khanlou's Promise library](https://github.com/khanlou/Promise) and [Google's Promises framework](https://github.com/google/promises).
+
 ## Installation
 
 `SwiftPromises` is available through [CocoaPods](https://cocoapods.org). To install
