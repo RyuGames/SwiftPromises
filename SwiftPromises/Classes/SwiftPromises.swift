@@ -19,7 +19,13 @@ public final class Promise<Value> {
     }
 
     internal var state: State<Value> = .pending
-    internal var val: Value?
+    internal var val: Value? {
+        if case let .resolved(value) = state {
+            return value
+        }
+        return nil
+    }
+
     private var callback: ((Value) -> Void)? = nil
     private var errorCallback: ((Error) -> Void)? = nil
     private var dispatchQueue: DispatchQueue = promiseQueue
@@ -56,21 +62,18 @@ public final class Promise<Value> {
     }
 
     private func reject(error: Error) {
-        _ = updateState(to: .rejected(error))
+        updateState(to: .rejected(error))
         triggerErrorCallbacksIfRejected()
     }
 
     private func resolve(value: Value) {
-        if updateState(to: .resolved(value)) {
-            val = value
-        }
+        updateState(to: .resolved(value))
         triggerCallbacksIfResolved()
     }
 
-    private func updateState(to newState: State<Value>) -> Bool {
-        guard case .pending = state else { return false }
+    private func updateState(to newState: State<Value>) {
+        guard case .pending = state else { return }
         state = newState
-        return true
     }
 
     private func triggerCallbacksIfResolved() {
