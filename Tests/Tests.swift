@@ -349,5 +349,55 @@ class Tests: XCTestCase {
         }
 
         XCTAssertNil(promise.val)
+
+        let promise2 = Promise<Int>()
+        guard case .pending = promise2.state else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNil(promise2.val)
+    }
+
+    func testRejected() {
+        let expectation = XCTestExpectation(description: "Test rejected promise")
+
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+        let promise = Promise<Any>(error)
+        promise.then ({ _ in
+            XCTFail()
+            expectation.fulfill()
+        }).catch ({ (err) in
+            XCTAssertEqual(error.domain, (err as NSError).domain)
+            expectation.fulfill()
+        })
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testResolved() {
+        let expectation = XCTestExpectation(description: "Test resolved promise in all")
+
+        let promise = Promise<Int>(15)
+
+        let promise2 = Promise<Int> {
+            return 25
+        }
+
+        let promise3 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
+                resolve(10)
+            })
+        }
+
+        all([promise, promise2, promise3]).then ({ (numbers) in
+            let total = numbers.reduce(0, +)
+            XCTAssertEqual(total, 50)
+            expectation.fulfill()
+        }).catch ({ _ in
+            XCTFail()
+            expectation.fulfill()
+        })
+        self.wait(for: [expectation], timeout: 10)
     }
 }

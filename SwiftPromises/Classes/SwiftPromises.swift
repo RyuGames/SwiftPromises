@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// The default queue to run the Promises on
+/// The default queue to run the Promises on.
 public let promiseQueue: DispatchQueue = .global()
 
 /// A Promise is an object representing the eventual completion/failure of an asynchronous operation.
@@ -38,20 +38,43 @@ public final class Promise<Value> {
     private var errorCallback: Catch? = nil
     private var dispatchQueue: DispatchQueue = promiseQueue
 
-    /// Initailizes a new Promise
+    /// Initailizes a new Promise.
     /// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
     /// Defaults to `promiseQueue`.
     /// - Parameter executor: The `Then` and `Catch` blocks.
-    /// - Parameter resolve: The `Then` block
-    /// - Parameter reject: The `Catch` block
+    /// - Parameter resolve: The `Then` block.
+    /// - Parameter reject: The `Catch` block.
     public init(dispatchQueue: DispatchQueue = promiseQueue, executor: (_ resolve: @escaping Then, _ reject: @escaping Catch) -> Void) {
         self.dispatchQueue = dispatchQueue
         executor(resolve, reject)
     }
 
+    /// Initialze a pending Promise.
+    public init() {
+        state = .pending
+    }
+
+    /// Intialize a resolved Promise
+    /// - Parameter value: The Promise's resolved value.
+    public init(_ value: Value) {
+        state = .resolved(value)
+    }
+
+    /// Intialize a resolved Promise.
+    /// - Parameter resolvedValue: The function returning the resolved value.
+    public init(_ resolvedValue: @escaping () -> Value) {
+        state = .resolved(resolvedValue())
+    }
+
+    /// Intialize a rejected Promise.
+    /// - Parameter error: The Promise's error.
+    public init(_ error: Error) {
+        state = .rejected(error)
+    }
+
     /// Handles resolving the Promise.
-    /// - Parameter onResolved: The `Then` block
-    /// - Parameter onRejected: The `Catch` block
+    /// - Parameter onResolved: The `Then` block.
+    /// - Parameter onRejected: The `Catch` block.
     public func then(_ onResolved: @escaping Then, _ onRejected: @escaping Catch = { _ in }) {
         callback = onResolved
         triggerCallbacksIfResolved()
@@ -81,8 +104,8 @@ public final class Promise<Value> {
         }
     }
 
-    /// The error callback for the given Promise
-    /// - Parameter onRejected: The `Catch` block
+    /// The error callback for the given Promise.
+    /// - Parameter onRejected: The `Catch` block.
     public func `catch`(_ onRejected: @escaping Catch) {
         errorCallback = onRejected
         triggerErrorCallbacksIfRejected()
