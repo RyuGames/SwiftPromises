@@ -28,6 +28,7 @@ public final class Promise<Value> {
 
     public func then(_ onResolved: @escaping (Value) -> Void) {
         callback = onResolved
+        triggerCallbacksIfResolved()
     }
 
     public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
@@ -48,6 +49,7 @@ public final class Promise<Value> {
 
     public func `catch`(_ onRejected: @escaping (Error) -> Void) {
         errorCallback = onRejected
+        triggerErrorCallbacksIfRejected()
     }
 
     private func reject(error: Error) {
@@ -72,5 +74,21 @@ public final class Promise<Value> {
         guard case .pending = state else { return false }
         state = newState
         return true
+    }
+
+    private func triggerCallbacksIfResolved() {
+        guard case let .resolved(value) = state else { return }
+        guard let callback = callback else { return }
+        dispatchQueue.async {
+            callback(value)
+        }
+    }
+
+    private func triggerErrorCallbacksIfRejected() {
+        guard case let .rejected(error) = state else { return }
+        guard let errorCallback = errorCallback else { return }
+        dispatchQueue.async {
+            errorCallback(error)
+        }
     }
 }
