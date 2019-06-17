@@ -10,25 +10,38 @@ import Foundation
 
 public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promise<[Value]> {
     return Promise<[Value]> { resolve, reject in
-        var results: [Value] = []
-        let dispatchGroup = DispatchGroup()
+        if promises.count == 0 {
+            resolve([])
+            return
+        }
 
+        var resolved: Bool = false
         for promise in promises {
-            dispatchGroup.enter()
-            promise.then { val in
-                    results.append(val)
-                    dispatchGroup.leave()
-                }.catch { err in
+            promise.then { _ in
+                var done = true
+                for p in promises {
+                    if case .pending = p.state {
+                        done = false
+                    }
+                }
+
+                if done && !resolved {
+                    resolved = true
+                    resolve(promises.map { $0.val! })
+                }
+            }.catch { err in
+                if !resolved {
+                    resolved = true
                     reject(err)
                 }
+            }
         }
 
         promiseQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: {
-            reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))
+            if !resolved {
+                resolved = true
+                reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))
+            }
         })
-
-        dispatchGroup.notify(queue: promiseQueue) {
-            resolve(results)
-        }
     }
 }

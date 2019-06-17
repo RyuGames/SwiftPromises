@@ -53,6 +53,7 @@ class Tests: XCTestCase {
             }
 
             XCTAssertEqual(total, expected)
+            XCTAssertEqual(numbers.count, 5)
             expectation.fulfill()
         }.catch { (err) in
             XCTFail()

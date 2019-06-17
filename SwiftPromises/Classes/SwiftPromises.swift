@@ -12,13 +12,14 @@ public let promiseQueue: DispatchQueue = .global()
 
 public final class Promise<Value> {
 
-    private enum State<T> {
+    internal enum State<T> {
         case pending
         case resolved(T)
         case rejected(Error)
     }
 
-    private var state: State<Value> = .pending
+    internal var state: State<Value> = .pending
+    internal var val: Value?
     private var callback: ((Value) -> Void)? = nil
     private var errorCallback: ((Error) -> Void)? = nil
     private var dispatchQueue: DispatchQueue = promiseQueue
@@ -36,11 +37,7 @@ public final class Promise<Value> {
     public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
         return Promise<NewValue> { resolve, reject in
             then { value in
-                onResolved(value).then { v in
-                    resolve(v)
-                }.catch { e in
-                    reject(e)
-                }
+                onResolved(value).then(resolve)
             }
         }
     }
@@ -59,18 +56,21 @@ public final class Promise<Value> {
     }
 
     private func reject(error: Error) {
-        updateState(to: .rejected(error))
+        _ = updateState(to: .rejected(error))
         triggerErrorCallbacksIfRejected()
     }
 
     private func resolve(value: Value) {
-        updateState(to: .resolved(value))
+        if updateState(to: .resolved(value)) {
+            val = value
+        }
         triggerCallbacksIfResolved()
     }
 
-    private func updateState(to newState: State<Value>) {
-        guard case .pending = state else { return }
+    private func updateState(to newState: State<Value>) -> Bool {
+        guard case .pending = state else { return false }
         state = newState
+        return true
     }
 
     private func triggerCallbacksIfResolved() {
