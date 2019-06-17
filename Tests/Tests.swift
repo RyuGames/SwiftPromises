@@ -46,7 +46,7 @@ class Tests: XCTestCase {
         }
 
         let expected: Int = 15 + 4 + 55 + 1 + 11
-        all([promise, promise2, promise3, promise4, promise5]).then ({ (numbers) in
+        all([promise, promise2, promise3, promise4, promise5]).then { (numbers) in
             var total = 0
             for number in numbers {
                 total += number
@@ -55,10 +55,10 @@ class Tests: XCTestCase {
             XCTAssertEqual(total, expected)
             XCTAssertEqual(numbers.count, 5)
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             XCTFail()
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -72,15 +72,15 @@ class Tests: XCTestCase {
             })
         }
 
-        all([promise]).then ({ _ in
+        all([promise]).then { _ in
             XCTFail()
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             let err = err as NSError
             let message = err.domain
             XCTAssertEqual(message, "Error")
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -89,13 +89,13 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all empty")
 
         let promises: [Promise<Any>] = []
-        all(promises).then ({ (numbers) in
+        all(promises).then { (numbers) in
             XCTAssertEqual(numbers.count, 0)
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             XCTFail()
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -115,15 +115,15 @@ class Tests: XCTestCase {
             })
         }
 
-        all([promise1, promise2], timeout: 100).then ({ (numbers) in
+        all([promise1, promise2], timeout: 100).then { (numbers) in
             XCTFail()
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             let err = err as NSError
             let message = err.domain
             XCTAssertEqual(message, "Timeout")
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -228,13 +228,13 @@ class Tests: XCTestCase {
             resolve(1)
         }
 
-        promise.then ({ (num) in
+        promise.then { (num) in
             XCTAssertEqual(num, 1)
             expectation.fulfill()
-        }).catch ({ _ in
+        }.catch { _ in
             XCTFail()
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -270,17 +270,17 @@ class Tests: XCTestCase {
             }
         }
 
-        work1("10").then ({ string in
+        work1("10").then { string in
             return work2(string)
-        }).then ({ number in
+        }.then { number in
             XCTFail()
             expectation.fulfill()
-        }).catch ({ err in
+        }.catch { err in
             let err = err as NSError
             let message = err.domain
             XCTAssertEqual(message, "Error")
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 5)
     }
@@ -304,14 +304,14 @@ class Tests: XCTestCase {
             return number * number
         }
 
-        work1("10").then ({ string in
+        work1("10").then { string in
             return work2(string)
-        }).then ({ number in
+        }.then { number in
             return work3(number)
-        }).then ({ number in
+        }.then { number in
             XCTAssertEqual(number, 100)
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -335,10 +335,10 @@ class Tests: XCTestCase {
             return number * number
         }
 
-        work1("10").then(work2).then(work3).then ({ number in
+        work1("10").then(work2).then(work3).then { number in
             XCTAssertEqual(number, 100)
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -364,13 +364,13 @@ class Tests: XCTestCase {
 
         let error = NSError(domain: "Error", code: -500, userInfo: [:])
         let promise = Promise<Any>(error)
-        promise.then ({ _ in
+        promise.then { _ in
             XCTFail()
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             XCTAssertEqual(error.domain, (err as NSError).domain)
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -383,13 +383,13 @@ class Tests: XCTestCase {
             return error
         }
 
-        promise.then ({ _ in
+        promise.then { _ in
             XCTFail()
             expectation.fulfill()
-        }).catch ({ (err) in
+        }.catch { (err) in
             XCTAssertEqual(error.domain, (err as NSError).domain)
             expectation.fulfill()
-        })
+        }
 
         self.wait(for: [expectation], timeout: 10)
     }
@@ -409,14 +409,14 @@ class Tests: XCTestCase {
             })
         }
 
-        all([promise, promise2, promise3]).then ({ (numbers) in
+        all([promise, promise2, promise3]).then { (numbers) in
             let total = numbers.reduce(0, +)
             XCTAssertEqual(total, 50)
             expectation.fulfill()
-        }).catch ({ _ in
+        }.catch { _ in
             XCTFail()
             expectation.fulfill()
-        })
+        }
         self.wait(for: [expectation], timeout: 10)
     }
 }
