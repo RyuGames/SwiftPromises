@@ -8,6 +8,11 @@
 
 import Foundation
 
+/// Calls an array of Promises in parallel
+/// Returns a new Promise with an array of the resolved values.
+/// If one of the Promises in the array throws an error, the catch function is called.
+/// - Parameter promises: The array of Promises to execute.
+/// - Parameter timeout: The amount of milliseconds to pass before triggering a timeout error.
 public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Promise<[Value]> {
     return Promise<[Value]> { resolve, reject in
         if promises.count == 0 {
@@ -46,6 +51,11 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Pr
     }
 }
 
+/// Synchronously calls a Promise
+/// Halts the given thread until it has completed.
+/// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
+/// Defaults to `.global(qos: .background)`
+/// - Parameter promise: The Promise to execute.
 public func await<Value>(_ dispatchQueue: DispatchQueue = .global(qos: .background), promise: Promise<Value>) throws -> Value {
     var result: Value!
     var error: Error?

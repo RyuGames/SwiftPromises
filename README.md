@@ -32,6 +32,8 @@ Light-weight Promise package for Swift
 
 `SwiftPromises` is a light-weight package to implement Promises in native Swift. It does not have any sub-dependencies and is meant to add Promise support with the most minimal code.
 
+A Promise is an object representing the eventual completion/failure of an asynchronous operation. While it is available natively in some languages, it is not currently supported out of the box in Swift.
+
 ## Installation
 
 `SwiftPromises` is available through [CocoaPods](https://cocoapods.org). To install
