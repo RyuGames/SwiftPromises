@@ -375,6 +375,25 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testRejectedFunction() {
+        let expectation = XCTestExpectation(description: "Test rejected promise function")
+
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+        let promise = Promise<Any> {
+            return error
+        }
+
+        promise.then ({ _ in
+            XCTFail()
+            expectation.fulfill()
+        }).catch ({ (err) in
+            XCTAssertEqual(error.domain, (err as NSError).domain)
+            expectation.fulfill()
+        })
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testResolved() {
         let expectation = XCTestExpectation(description: "Test resolved promise in all")
 

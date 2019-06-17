@@ -61,7 +61,7 @@ public final class Promise<Value> {
     }
 
     /// Intialize a resolved Promise.
-    /// - Parameter resolvedValue: The function returning the resolved value.
+    /// - Parameter resolvedValue: The function returning the Promise's resolved value.
     public init(_ resolvedValue: @escaping () -> Value) {
         state = .resolved(resolvedValue())
     }
@@ -70,6 +70,12 @@ public final class Promise<Value> {
     /// - Parameter error: The Promise's error.
     public init(_ error: Error) {
         state = .rejected(error)
+    }
+
+    /// Intialize a rejected Promise.
+    /// - Parameter errorValue: The function returning the Promise's error.
+    public init(_ errorValue: @escaping () -> Error) {
+        state = .rejected(errorValue())
     }
 
     /// Handles resolving the Promise.
