@@ -128,6 +128,21 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testAwait() {
+        let promise = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                resolve(1)
+            })
+        }
+
+        guard let value = try? await(promise: promise) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(value, 1)
+    }
+
     func testBasicPromise() {
         let expectation = XCTestExpectation(description: "Test basic promise")
 
@@ -137,6 +152,9 @@ class Tests: XCTestCase {
 
         promise.then ({ (num) in
             XCTAssertEqual(num, 1)
+            expectation.fulfill()
+        }).catch ({ _ in
+            XCTFail()
             expectation.fulfill()
         })
 

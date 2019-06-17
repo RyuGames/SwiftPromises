@@ -45,3 +45,27 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15) -> Promi
         })
     }
 }
+
+public func await<Value>(_ dispatchQueue: DispatchQueue = .global(qos: .background), promise: Promise<Value>) throws -> Value {
+    var result: Value!
+    var error: Error?
+
+    let semaphore = DispatchSemaphore(value: 0)
+
+    dispatchQueue.async {
+        promise.then ({ (value) in
+            result = value
+            semaphore.signal()
+        }).catch ({ (err) in
+            error = err
+            semaphore.signal()
+        })
+    }
+
+    _ = semaphore.wait(wallTimeout: .distantFuture)
+    if let error = error {
+        throw error
+    }
+
+    return result
+}
