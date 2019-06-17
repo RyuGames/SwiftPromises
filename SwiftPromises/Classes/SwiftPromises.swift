@@ -51,8 +51,6 @@ public final class Promise<Value> {
         return Promise<NewValue> { resolve, reject in
             then({ (value) in
                 onResolved(value).then(resolve).catch(reject)
-            }, { (error) in
-                reject(error)
             })
         }
     }

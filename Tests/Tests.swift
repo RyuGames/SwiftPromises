@@ -342,4 +342,12 @@ class Tests: XCTestCase {
 
         self.wait(for: [expectation], timeout: 10)
     }
+
+    func testPending() {
+        let promise = Promise<Any> { _, reject in
+            reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+        }
+
+        XCTAssertNil(promise.val)
+    }
 }
