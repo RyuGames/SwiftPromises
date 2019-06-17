@@ -143,6 +143,84 @@ class Tests: XCTestCase {
         XCTAssertEqual(value, 1)
     }
 
+    func testAwaitMultiple() {
+        let promise = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                resolve(15)
+            })
+        }
+
+        let promise2 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.5, execute: {
+                resolve(4)
+            })
+        }
+
+        let promise3 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                resolve(55)
+            })
+        }
+
+        let promise4 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.5, execute: {
+                resolve(1)
+            })
+        }
+
+        let promise5 = Promise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                resolve(11)
+            })
+        }
+
+        guard let value = try? await(promise: promise) else {
+            XCTFail()
+            return
+        }
+
+        guard let value2 = try? await(promise: promise2) else {
+            XCTFail()
+            return
+        }
+
+        guard let value3 = try? await(promise: promise3) else {
+            XCTFail()
+            return
+        }
+
+        guard let value4 = try? await(promise: promise4) else {
+            XCTFail()
+            return
+        }
+
+        guard let value5 = try? await(promise: promise5) else {
+            XCTFail()
+            return
+        }
+
+        let total: Int = value + value2 + value3 + value4 + value5
+        let expected: Int = 15 + 4 + 55 + 1 + 11
+        XCTAssertEqual(total, expected)
+    }
+
+    func testAwaitReject() {
+        let promise = Promise<Int> { _, reject in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: {
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            })
+        }
+
+        do {
+            let _ = try await(promise: promise)
+            XCTFail()
+        } catch let error {
+            let error = error as NSError
+            let message = error.domain
+            XCTAssertEqual(message, "Error")
+        }
+    }
+
     func testBasicPromise() {
         let expectation = XCTestExpectation(description: "Test basic promise")
 
