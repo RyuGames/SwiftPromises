@@ -34,6 +34,9 @@ public final class Promise<Value> {
     /// A `Catch` block.
     public typealias Catch = (Error) -> Void
 
+    /// An `Always` block.
+    public typealias Always = () -> Void
+
     private var callback: Then? = nil
     private var errorCallback: Catch? = nil
     private var dispatchQueue: DispatchQueue = promiseQueue
@@ -81,7 +84,7 @@ public final class Promise<Value> {
     /// Internal helper function: Handles resolving the Promise.
     /// - Parameter onResolved: The `Then` block.
     /// - Parameter onRejected: The `Catch` block.
-    private func internalThen(_ onResolved: @escaping Then, _ onRejected: @escaping Catch = { _ in }) {
+    private func internalThen(onResolved: @escaping Then = { _ in }, onRejected: @escaping Catch = { _ in }) {
         callback = onResolved
         triggerCallbacksIfResolved()
         errorCallback = onRejected
@@ -92,7 +95,7 @@ public final class Promise<Value> {
     /// - Parameter onResolved: Block to execute when resolved.
     public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
         return Promise<NewValue> { resolve, reject in
-            internalThen({ (value) in
+            internalThen(onResolved: { (value) in
                 onResolved(value).then(resolve).catch(reject)
             })
         }
@@ -102,9 +105,9 @@ public final class Promise<Value> {
     /// - Parameter onResolved: Block to execute when resolved.
     public func then<NewValue>(_ onResolved: @escaping (Value) -> NewValue) -> Promise<NewValue> {
         return Promise<NewValue> { resolve, reject in
-            return internalThen({ (val) in
+            return internalThen(onResolved: { (val) in
                 resolve(onResolved(val))
-            }, { (error) in
+            }, onRejected: { (error) in
                 reject(error)
             })
         }
@@ -113,14 +116,35 @@ public final class Promise<Value> {
     /// Handles resolving the Promise.
     /// - Parameter onResolved: Block to execute when resolved.
     public func then(_ onResolved: @escaping Then) {
-        internalThen(onResolved) { _ in }
+        internalThen(onResolved: onResolved)
     }
 
     /// The error callback for the given Promise.
     /// - Parameter onRejected: The `Catch` block.
     public func `catch`(_ onRejected: @escaping Catch) {
-        errorCallback = onRejected
-        triggerErrorCallbacksIfRejected()
+        return internalThen(onRejected: onRejected)
+    }
+
+    /// The error callback for the given Promise. Returns another Promise.
+    /// - Parameter onRejected: The `Catch` block.
+    public func `catch`<NewValue>(_ onRejected: @escaping (Error) -> NewValue) -> Promise<NewValue> {
+        return Promise<NewValue> { resolve, reject in
+            return internalThen(onResolved: { (val) in
+                reject(NSError(domain: "", code: 0, userInfo: [:])) // The error to be returned and ignored by Always
+            }, onRejected: { (error) in
+                resolve(onRejected(error))
+            })
+        }
+    }
+
+    /// Called always.
+    /// - Parameter onAlways: Block to execute always.
+    public func always(_ onAlways: @escaping Always) {
+        return internalThen(onResolved: { _ in
+            onAlways()
+        }, onRejected: { _ in
+            onAlways()
+        })
     }
 
     private func reject(error: Error) {

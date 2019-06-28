@@ -128,6 +128,137 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testAlwaysBasic() {
+        let expectation = XCTestExpectation(description: "Test always basic")
+
+        let promise1 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                resolve(1)
+            })
+        }
+
+        promise1.then { (val) in
+            print("Then")
+            XCTAssertEqual(val, 1)
+        }.always {
+            print("Always")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAlwaysCatch() {
+        let expectation = XCTestExpectation(description: "Test always catch")
+
+        let promise1 = Promise<Int> { resolve, _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                resolve(1)
+            })
+        }
+
+        promise1.then { (val) in
+            print("Then")
+            XCTAssertEqual(val, 1)
+        }.catch { _ in
+            print("Catch")
+            XCTFail()
+        }.always {
+            print("Always")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAlwaysCatchReject() {
+        let expectation = XCTestExpectation(description: "Test always catch reject")
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+
+        let promise1 = Promise<Int> { _, reject in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                reject(error)
+            })
+        }
+
+        promise1.then { (val) in
+            print("Then")
+            XCTFail()
+        }.catch { (err) in
+            print("Catch")
+            XCTAssertEqual(error.domain, (err as NSError).domain)
+        }.always {
+            print("Always")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAlwaysChaining() {
+        let expectation = XCTestExpectation(description: "Test always chaining")
+
+        func work1(_ string: String) -> Promise<String> {
+            return Promise { resolve, _ in
+                resolve(string)
+            }
+        }
+
+        func work2(_ string: String) -> Promise<Int> {
+            return Promise { resolve, _ in
+                resolve(Int(string) ?? 0)
+            }
+        }
+
+        func work3(_ number: Int) -> Int {
+            return number * number
+        }
+
+        work1("10").then { string in
+            return work2(string)
+        }.then { number in
+            return work3(number)
+        }.then { number in
+            XCTAssertEqual(number, 100)
+        }.always {
+            print("Always")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testAlwaysChainingCatch() {
+        let expectation = XCTestExpectation(description: "Test always chaining catch")
+
+        func work1(_ string: String) -> Promise<String> {
+            return Promise { resolve, _ in
+                resolve(string)
+            }
+        }
+
+        func work2(_ string: String) -> Promise<Int> {
+            return Promise { _, reject in
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            }
+        }
+
+        work1("10").then { string in
+            return work2(string)
+        }.then { number in
+            XCTFail()
+        }.catch { err in
+            let err = err as NSError
+            let message = err.domain
+            XCTAssertEqual(message, "Error")
+        }.always {
+            print("Always")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testAwait() {
         let promise = Promise<Int> { resolve, _ in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.1, execute: {
