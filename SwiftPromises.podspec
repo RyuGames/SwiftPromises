@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'SwiftPromises'
-  s.version          = '0.0.3'
+  s.version          = '0.0.4'
   s.summary          = 'Light-weight Promise package for Swift'
   s.homepage         = 'https://github.com/Ryucoin/SwiftPromises'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
