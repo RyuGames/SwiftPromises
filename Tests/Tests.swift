@@ -135,7 +135,7 @@ class Tests: XCTestCase {
             })
         }
 
-        guard let value = try? await(promise: promise) else {
+        guard let value = try? await(promise) else {
             XCTFail()
             return
         }
@@ -174,27 +174,27 @@ class Tests: XCTestCase {
             })
         }
 
-        guard let value = try? await(promise: promise) else {
+        guard let value = try? await(promise) else {
             XCTFail()
             return
         }
 
-        guard let value2 = try? await(promise: promise2) else {
+        guard let value2 = try? await(promise2) else {
             XCTFail()
             return
         }
 
-        guard let value3 = try? await(promise: promise3) else {
+        guard let value3 = try? await(promise3) else {
             XCTFail()
             return
         }
 
-        guard let value4 = try? await(promise: promise4) else {
+        guard let value4 = try? await(promise4) else {
             XCTFail()
             return
         }
 
-        guard let value5 = try? await(promise: promise5) else {
+        guard let value5 = try? await(promise5) else {
             XCTFail()
             return
         }
@@ -212,7 +212,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            let _ = try await(promise: promise)
+            let _ = try await(promise)
             XCTFail()
         } catch let error {
             let error = error as NSError

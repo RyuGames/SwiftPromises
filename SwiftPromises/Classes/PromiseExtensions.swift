@@ -56,7 +56,7 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Pr
 /// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
 /// Defaults to `.global(qos: .background)`
 /// - Parameter promise: The Promise to execute.
-public func await<Value>(_ dispatchQueue: DispatchQueue = .global(qos: .background), promise: Promise<Value>) throws -> Value {
+public func await<Value>(dispatchQueue: DispatchQueue = .global(qos: .background), _ promise: Promise<Value>) throws -> Value {
     var result: Value!
     var error: Error?
 
