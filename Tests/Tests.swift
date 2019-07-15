@@ -386,6 +386,25 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testCatchingBasic() {
+        let expectation = XCTestExpectation(description: "Test catching basic")
+
+        let promise = Promise<Bool> { _, reject in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
+                reject(NSError(domain: "Error", code: -500, userInfo: [:]))
+            })
+        }
+
+        promise.then { val in
+            XCTFail()
+            return
+        }.catch { _ in
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testChainCatching() {
         let expectation = XCTestExpectation(description: "Test chaining catching")
 
