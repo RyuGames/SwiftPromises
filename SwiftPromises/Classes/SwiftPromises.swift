@@ -8,9 +8,6 @@
 
 import Foundation
 
-/// The default queue to run the Promises on.
-public let promiseQueue: DispatchQueue = .global()
-
 /// A Promise is an object representing the eventual completion/failure of an asynchronous operation.
 public final class Promise<Value> {
 
@@ -39,7 +36,7 @@ public final class Promise<Value> {
 
     private var callback: Then? = nil
     private var errorCallback: Catch? = nil
-    private var dispatchQueue: DispatchQueue = promiseQueue
+    private var dispatchQueue: DispatchQueue? = nil
 
     /// Initailizes a new Promise.
     /// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
@@ -47,7 +44,7 @@ public final class Promise<Value> {
     /// - Parameter executor: The `Then` and `Catch` blocks.
     /// - Parameter resolve: The `Then` block.
     /// - Parameter reject: The `Catch` block.
-    public init(dispatchQueue: DispatchQueue = promiseQueue, executor: (_ resolve: @escaping Then, _ reject: @escaping Catch) -> Void) {
+    public init(dispatchQueue: DispatchQueue? = nil, executor: (_ resolve: @escaping Then, _ reject: @escaping Catch) -> Void) {
         self.dispatchQueue = dispatchQueue
         executor(resolve, reject)
     }
@@ -165,7 +162,11 @@ public final class Promise<Value> {
     private func triggerCallbacksIfResolved() {
         guard case let .resolved(value) = state else { return }
         guard let callback = callback else { return }
-        dispatchQueue.async {
+        if let dispatchQueue = dispatchQueue {
+            dispatchQueue.async {
+                callback(value)
+            }
+        } else {
             callback(value)
         }
     }
@@ -173,7 +174,11 @@ public final class Promise<Value> {
     private func triggerErrorCallbacksIfRejected() {
         guard case let .rejected(error) = state else { return }
         guard let errorCallback = errorCallback else { return }
-        dispatchQueue.async {
+        if let dispatchQueue = dispatchQueue {
+            dispatchQueue.async {
+                errorCallback(error)
+            }
+        } else {
             errorCallback(error)
         }
     }

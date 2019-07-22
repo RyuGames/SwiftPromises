@@ -13,8 +13,8 @@ import Foundation
 /// If one of the Promises in the array throws an error, the catch function is called.
 /// - Parameter promises: The array of Promises to execute.
 /// - Parameter timeout: The amount of milliseconds to pass before triggering a timeout error.
-public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Promise<[Value]> {
-    return Promise<[Value]> { resolve, reject in
+public func all<Value>(dispatchQueue: DispatchQueue? = nil, _ promises: [Promise<Value>], timeout: Int = 15000) -> Promise<[Value]> {
+    return Promise<[Value]>(dispatchQueue: dispatchQueue) { resolve, reject in
         if promises.count == 0 {
             resolve([])
             return
@@ -42,7 +42,7 @@ public func all<Value>(_ promises: [Promise<Value>], timeout: Int = 15000) -> Pr
             }
         }
 
-        promiseQueue.asyncAfter(deadline: .now() + .milliseconds(timeout), execute: {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(timeout), execute: {
             if !resolved {
                 resolved = true
                 reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))

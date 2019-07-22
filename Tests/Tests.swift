@@ -67,7 +67,7 @@ class Tests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test all catch")
 
         let promise = Promise<Int> { resolve, reject in
-            promiseQueue.asyncAfter(deadline: .now() + 0.2, execute: {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2, execute: {
                 reject(NSError(domain: "Error", code: -500, userInfo: [:]))
             })
         }
