@@ -15,8 +15,8 @@ import Foundation
 /// Defaults to `nil`
 /// - Parameter promises: The array of Promises to execute.
 /// - Parameter timeout: The amount of milliseconds to pass before triggering a timeout error.
-public func all<Value, ErrorType: Error>(dispatchQueue: DispatchQueue? = nil, _ promises: [BasePromise<Value, ErrorType>], timeout: Int = 15000) -> BasePromise<[Value], ErrorType> {
-    return BasePromise<[Value], ErrorType>(dispatchQueue: dispatchQueue) { resolve, reject in
+public func all<Value, ErrorType>(dispatchQueue: DispatchQueue? = nil, _ promises: [BasePromise<Value, ErrorType>], timeout: Int = 15000) -> BasePromise<[Value], Error> {
+    return BasePromise<[Value], Error>(dispatchQueue: dispatchQueue) { resolve, reject in
         if promises.count == 0 {
             resolve([])
             return
@@ -47,7 +47,7 @@ public func all<Value, ErrorType: Error>(dispatchQueue: DispatchQueue? = nil, _ 
         DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(timeout), execute: {
             if !resolved {
                 resolved = true
-                reject(NSError(domain: "Timeout", code: -1, userInfo: [:]) as! ErrorType)
+                reject(NSError(domain: "Timeout", code: -1, userInfo: [:]))
             }
         })
     }

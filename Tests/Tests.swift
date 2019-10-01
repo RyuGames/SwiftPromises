@@ -544,6 +544,33 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testCustomErrorTypeAllTimeout() {
+        let expectation = XCTestExpectation(description: "Test custom error promise all timeout")
+
+        let p = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+                resolve(4)
+            }
+        }
+
+        let promises = [p]
+        all(promises, timeout: 100).then { (result) in
+            var sum = 0
+            for i in result {
+                sum += i
+            }
+            XCTAssertEqual(sum, 38)
+            expectation.fulfill()
+        }.catch { (err) in
+            let err = err as NSError
+            let message = err.domain
+            XCTAssertEqual(message, "Timeout")
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testCustomErrorTypeAwait() {
         let expectation = XCTestExpectation(description: "Test custom error promise await")
 
