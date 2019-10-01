@@ -12,6 +12,13 @@ class Tests: XCTestCase {
         super.tearDown()
     }
 
+    struct CustomError: Error {
+        var msg: String
+        var code: Int
+    }
+
+    typealias NPromise<Value> = BasePromise<Value, CustomError>
+
     func testAll() {
         let expectation = XCTestExpectation(description: "Test all")
 
@@ -493,14 +500,113 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
-    func testCustomErrorType() {
-        typealias NPromise<Value> = BasePromise<Value, NSError>
-        let p = NPromise<Int>(15)
+    func testCustomErrorTypeAll() {
+        let expectation = XCTestExpectation(description: "Test custom error promise all")
+
+        let p1 = NPromise<Int>(15)
+        let p2 = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().async {
+                resolve(3)
+            }
+        }
+
+        let p3 = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+                resolve(3)
+            }
+        }
+
+        let p4 = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(4)
+            }
+        }
+
+        let p5 = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().async {
+                resolve(13)
+            }
+        }
+
+        let promises = [p1, p2, p3, p4, p5]
+        all(promises).then { (result) in
+            var sum = 0
+            for i in result {
+                sum += i
+            }
+            XCTAssertEqual(sum, 38)
+            expectation.fulfill()
+        }.catch { _ in
+            XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testCustomErrorTypeAwait() {
+        let expectation = XCTestExpectation(description: "Test custom error promise await")
+
+        let p = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(15)
+            }
+        }
+
+        do {
+            let result = try await(p)
+            XCTAssertEqual(result, 15)
+            expectation.fulfill()
+        } catch {
+            XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testCustomErrorTypeReject() {
+        let expectation = XCTestExpectation(description: "Test custom error promise reject")
+
+        let errorMsg = "Failed!"
+        let errorCode = 500
+
+        let p = NPromise<Int> { (_, reject) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                reject(CustomError(msg: errorMsg, code: errorCode))
+            }
+        }
+
+        p.then { (i) in
+            XCTFail()
+            expectation.fulfill()
+        }.catch { (e) in
+            XCTAssertEqual(e.msg, errorMsg)
+            XCTAssertEqual(e.code, errorCode)
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testCustomErrorTypeResolve() {
+        let expectation = XCTestExpectation(description: "Test custom error promise resolve")
+
+        let p = NPromise<Int> { (resolve, _) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(15)
+            }
+        }
+
         p.then { (i) in
             XCTAssertEqual(i, 15)
+            expectation.fulfill()
         }.catch { (e) in
-            XCTFail(e.domain)
+            XCTFail()
+            expectation.fulfill()
         }
+
+        self.wait(for: [expectation], timeout: 10)
     }
 
     func testMultiReject() {
