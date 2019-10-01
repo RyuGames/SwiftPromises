@@ -11,6 +11,8 @@ import Foundation
 /// Calls an array of Promises in parallel
 /// Returns a new Promise with an array of the resolved values.
 /// If one of the Promises in the array throws an error, the catch function is called.
+/// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
+/// Defaults to `nil`
 /// - Parameter promises: The array of Promises to execute.
 /// - Parameter timeout: The amount of milliseconds to pass before triggering a timeout error.
 public func all<Value>(dispatchQueue: DispatchQueue? = nil, _ promises: [Promise<Value>], timeout: Int = 15000) -> Promise<[Value]> {
