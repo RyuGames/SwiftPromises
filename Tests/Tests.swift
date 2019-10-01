@@ -493,6 +493,60 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testMultiReject() {
+        let expectation = XCTestExpectation(description: "Test multi reject promise")
+
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+
+        let promise = Promise<Int> { (resolve, reject) in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(5)
+            }
+
+            DispatchQueue.global().async {
+                reject(error)
+            }
+        }
+
+        do {
+            _ = try await(promise)
+            XCTFail()
+            expectation.fulfill()
+        } catch (let e) {
+            XCTAssertEqual(error.domain, (e as NSError).domain)
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testMultiResolve() {
+        let expectation = XCTestExpectation(description: "Test multi resolve promise")
+
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+
+        let promise = Promise<Int> { (resolve, reject) in
+            DispatchQueue.global().async {
+                resolve(5)
+            }
+
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                reject(error)
+            }
+        }
+
+        do {
+            let response = try await(promise)
+            XCTAssertEqual(response, 5)
+            expectation.fulfill()
+        } catch {
+            XCTFail()
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testPending() {
         let promise = Promise<Any> { _, reject in
             reject(NSError(domain: "Error", code: -500, userInfo: [:]))
