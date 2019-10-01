@@ -544,6 +544,25 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testRejectOnQueue() {
+        let expectation = XCTestExpectation(description: "Test rejected promise function on non-default queue")
+
+        let error = NSError(domain: "Error", code: -500, userInfo: [:])
+        let promise = Promise<Int>(dispatchQueue: .global()) { (_, reject) in
+            reject(error)
+        }
+
+        do {
+            _ = try await(promise)
+            XCTFail()
+        } catch (let e) {
+            XCTAssertEqual(error.domain, (e as NSError).domain)
+            expectation.fulfill()
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testResolved() {
         let expectation = XCTestExpectation(description: "Test resolved promise in all")
 
@@ -567,6 +586,25 @@ class Tests: XCTestCase {
             XCTFail()
             expectation.fulfill()
         }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testResolveOnQueue() {
+        let expectation = XCTestExpectation(description: "Test resolved promise function on non-default queue")
+
+        let promise = Promise<Int>(dispatchQueue: .global()) { (resolve, _) in
+            resolve(15)
+        }
+
+        do {
+            let response = try await(promise)
+            XCTAssertEqual(response, 15)
+            expectation.fulfill()
+        } catch {
+            XCTFail()
+            expectation.fulfill()
+        }
+
         self.wait(for: [expectation], timeout: 10)
     }
 
