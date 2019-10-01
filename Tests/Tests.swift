@@ -493,6 +493,16 @@ class Tests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testCustomErrorType() {
+        typealias NPromise<Value> = BasePromise<Value, NSError>
+        let p = NPromise<Int>(15)
+        p.then { (i) in
+            XCTAssertEqual(i, 15)
+        }.catch { (e) in
+            XCTFail(e.domain)
+        }
+    }
+
     func testMultiReject() {
         let expectation = XCTestExpectation(description: "Test multi reject promise")
 

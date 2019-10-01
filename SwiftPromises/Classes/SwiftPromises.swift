@@ -8,16 +8,17 @@
 
 import Foundation
 
+public typealias Promise<Value> = BasePromise<Value, Error>
 /// A Promise is an object representing the eventual completion/failure of an asynchronous operation.
-public final class Promise<Value> {
+public final class BasePromise<Value, ErrorType: Error> {
 
-    internal enum State<T> {
+    internal enum State<T, E> {
         case pending
         case resolved(T)
-        case rejected(Error)
+        case rejected(E)
     }
 
-    internal var state: State<Value> = .pending
+    internal var state: State<Value, ErrorType> = .pending
     internal var val: Value? {
         if case let .resolved(value) = state {
             return value
@@ -29,7 +30,7 @@ public final class Promise<Value> {
     public typealias Then = (Value) -> Void
 
     /// A `Catch` block.
-    public typealias Catch = (Error) -> Void
+    public typealias Catch = (ErrorType) -> Void
 
     /// An `Always` block.
     public typealias Always = () -> Void
@@ -68,13 +69,13 @@ public final class Promise<Value> {
 
     /// Intialize a rejected Promise.
     /// - Parameter error: The Promise's error.
-    public init(_ error: Error) {
+    public init(_ error: ErrorType) {
         state = .rejected(error)
     }
 
     /// Intialize a rejected Promise.
     /// - Parameter errorValue: The function returning the Promise's error.
-    public init(_ errorValue: @escaping () -> Error) {
+    public init(_ errorValue: @escaping () -> ErrorType) {
         state = .rejected(errorValue())
     }
 
@@ -90,8 +91,8 @@ public final class Promise<Value> {
 
     /// Handles resolving the Promise (flatMap).
     /// - Parameter onResolved: Block to execute when resolved.
-    public func then<NewValue>(_ onResolved: @escaping (Value) -> Promise<NewValue>) -> Promise<NewValue> {
-        return Promise<NewValue> { resolve, reject in
+    public func then<NewValue>(_ onResolved: @escaping (Value) -> BasePromise<NewValue, ErrorType>) -> BasePromise<NewValue, ErrorType> {
+        return BasePromise<NewValue, ErrorType> { resolve, reject in
             internalThen(onResolved: { (value) in
                 onResolved(value).then(resolve).catch(reject)
             })
@@ -100,8 +101,8 @@ public final class Promise<Value> {
 
     /// Handles resolving the Promise (map).
     /// - Parameter onResolved: Block to execute when resolved.
-    public func then<NewValue>(_ onResolved: @escaping (Value) -> NewValue) -> Promise<NewValue> {
-        return Promise<NewValue> { resolve, reject in
+    public func then<NewValue>(_ onResolved: @escaping (Value) -> NewValue) -> BasePromise<NewValue, ErrorType> {
+        return BasePromise<NewValue, ErrorType> { resolve, reject in
             return internalThen(onResolved: { (val) in
                 resolve(onResolved(val))
             }, onRejected: { (error) in
@@ -124,10 +125,10 @@ public final class Promise<Value> {
 
     /// The error callback for the given Promise. Returns another Promise.
     /// - Parameter onRejected: The `Catch` block.
-    public func `catch`<NewValue>(_ onRejected: @escaping (Error) -> NewValue) -> Promise<NewValue> {
-        return Promise<NewValue> { resolve, reject in
+    public func `catch`<NewValue>(_ onRejected: @escaping (ErrorType) -> NewValue) -> BasePromise<NewValue, ErrorType> {
+        return BasePromise<NewValue, ErrorType> { resolve, reject in
             return internalThen(onResolved: { (val) in
-                reject(NSError(domain: "", code: 0, userInfo: [:])) // The error to be returned and ignored by Always
+                reject(NSError(domain: "", code: 0, userInfo: [:]) as! ErrorType) // The error to be returned and ignored by Always
             }, onRejected: { (error) in
                 resolve(onRejected(error))
             })
@@ -144,7 +145,7 @@ public final class Promise<Value> {
         })
     }
 
-    private func reject(error: Error) {
+    private func reject(error: ErrorType) {
         updateState(to: .rejected(error))
         triggerErrorCallbacksIfRejected()
     }
@@ -154,7 +155,7 @@ public final class Promise<Value> {
         triggerCallbacksIfResolved()
     }
 
-    private func updateState(to newState: State<Value>) {
+    private func updateState(to newState: State<Value, ErrorType>) {
         guard case .pending = state else { return }
         state = newState
     }
