@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18ABBFB597EB13D9134382FA /* Pods_SwiftPromises_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2EAD25871DF4E02C1CC215E /* Pods_SwiftPromises_Tests.framework */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		7FCD082F22B7234400D387D6 /* SwiftPromises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD082D22B7234400D387D6 /* SwiftPromises.swift */; };
 		7FCD083122B750F700D387D6 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD083022B750F700D387D6 /* PromiseExtensions.swift */; };
@@ -19,12 +18,9 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		722A16A5FA556212C5F77133 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		7FB5B30C6BCB970D1D92FDA0 /* Pods-SwiftPromises_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftPromises_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SwiftPromises_Tests/Pods-SwiftPromises_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		7FCD082D22B7234400D387D6 /* SwiftPromises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftPromises.swift; path = SwiftPromises/Classes/SwiftPromises.swift; sourceTree = SOURCE_ROOT; };
 		7FCD083022B750F700D387D6 /* PromiseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PromiseExtensions.swift; path = SwiftPromises/Classes/PromiseExtensions.swift; sourceTree = SOURCE_ROOT; };
-		94C3D3DBD81877287F998F89 /* Pods-SwiftPromises_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftPromises_Tests.release.xcconfig"; path = "Target Support Files/Pods-SwiftPromises_Tests/Pods-SwiftPromises_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		9BB51C9B780BB599F3BCC51A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		F2EAD25871DF4E02C1CC215E /* Pods_SwiftPromises_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftPromises_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,21 +28,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18ABBFB597EB13D9134382FA /* Pods_SwiftPromises_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3E7B6506EAA6268CE13D9E93 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F2EAD25871DF4E02C1CC215E /* Pods_SwiftPromises_Tests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -54,8 +41,6 @@
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
-				69A069B992930529BC6E9F75 /* Pods */,
-				3E7B6506EAA6268CE13D9E93 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,15 +79,6 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		69A069B992930529BC6E9F75 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7FB5B30C6BCB970D1D92FDA0 /* Pods-SwiftPromises_Tests.debug.xcconfig */,
-				94C3D3DBD81877287F998F89 /* Pods-SwiftPromises_Tests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		7F9B40E921B4377E001D8885 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,7 +96,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SwiftPromises_Tests" */;
 			buildPhases = (
-				D518CA149FCD5F965B75F0D2 /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -178,31 +153,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		D518CA149FCD5F965B75F0D2 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SwiftPromises_Tests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		607FACE11AFB9204008FA782 /* Sources */ = {
@@ -327,7 +277,6 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7FB5B30C6BCB970D1D92FDA0 /* Pods-SwiftPromises_Tests.debug.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 6RN58493KK;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -349,7 +298,6 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94C3D3DBD81877287F998F89 /* Pods-SwiftPromises_Tests.release.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 6RN58493KK;
 				FRAMEWORK_SEARCH_PATHS = (
