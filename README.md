@@ -1,6 +1,6 @@
 <p align="center">
 <img
-src="https://s3.amazonaws.com/ryu-logos/RyuIcon128x128.png"
+src="https://s3.amazonaws.com/ryu-logos/RyuIcon128x128.png?"
 width="128px;">
 </p>
 
@@ -9,8 +9,8 @@ width="128px;">
 Light-weight Promise package for Swift
 </p>
 
-[![Build Status](https://travis-ci.com/Ryucoin/SwiftPromises.svg?branch=master)](https://travis-ci.com/Ryucoin/SwiftPromises)
-[![codecov](https://codecov.io/gh/Ryucoin/SwiftPromises/branch/master/graph/badge.svg)](https://codecov.io/gh/Ryucoin/SwiftPromises)
+[![Build Status](https://travis-ci.com/RyuGames/SwiftPromises.svg?branch=master)](https://travis-ci.com/RyuGames/SwiftPromises)
+[![codecov](https://codecov.io/gh/RyuGames/SwiftPromises/branch/master/graph/badge.svg)](https://codecov.io/gh/RyuGames/SwiftPromises)
 [![Version](https://img.shields.io/cocoapods/v/SwiftPromises.svg?style=flat)](https://cocoapods.org/pods/SwiftPromises)
 [![License](https://img.shields.io/cocoapods/l/SwiftPromises.svg?style=flat)](./LICENSE)
 [![Platform](https://img.shields.io/cocoapods/p/SwiftPromises.svg?style=flat)](https://cocoapods.org/pods/SwiftPromises)
