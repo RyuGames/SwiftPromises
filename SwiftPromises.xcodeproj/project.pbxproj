@@ -86,7 +86,7 @@
 				7FCD083022B750F700D387D6 /* PromiseExtensions.swift */,
 			);
 			name = Classes;
-			path = NetworkUtils/Classes;
+			path = SwiftPromises/Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
