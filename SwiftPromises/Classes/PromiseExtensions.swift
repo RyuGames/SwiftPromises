@@ -53,12 +53,17 @@ public func all<Value, ErrorType>(dispatchQueue: DispatchQueue? = nil, _ promise
     }
 }
 
+@available(*, unavailable, renamed: "awaitPromise", message: "await has been renamed awaitPromise")
+public func await<Value, ErrorType: Error>(dispatchQueue: DispatchQueue = .global(qos: .background), _ promise: BasePromise<Value, ErrorType>) throws -> Value {
+    return try awaitPromise(promise)
+}
+
 /// Synchronously calls a Promise
 /// Halts the given thread until it has completed.
 /// - Parameter dispatchQueue: The `DispatchQueue` to run the given Promise on.
 /// Defaults to `.global(qos: .background)`
 /// - Parameter promise: The Promise to execute.
-public func await<Value, ErrorType: Error>(dispatchQueue: DispatchQueue = .global(qos: .background), _ promise: BasePromise<Value, ErrorType>) throws -> Value {
+public func awaitPromise<Value, ErrorType: Error>(dispatchQueue: DispatchQueue = .global(qos: .background), _ promise: BasePromise<Value, ErrorType>) throws -> Value {
     var result: Value!
     var error: Error?
 

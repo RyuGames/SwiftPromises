@@ -273,7 +273,7 @@ class Tests: XCTestCase {
             })
         }
 
-        guard let value = try? await(promise) else {
+        guard let value = try? awaitPromise(promise) else {
             XCTFail()
             return
         }
@@ -312,27 +312,27 @@ class Tests: XCTestCase {
             })
         }
 
-        guard let value = try? await(promise) else {
+        guard let value = try? awaitPromise(promise) else {
             XCTFail()
             return
         }
 
-        guard let value2 = try? await(promise2) else {
+        guard let value2 = try? awaitPromise(promise2) else {
             XCTFail()
             return
         }
 
-        guard let value3 = try? await(promise3) else {
+        guard let value3 = try? awaitPromise(promise3) else {
             XCTFail()
             return
         }
 
-        guard let value4 = try? await(promise4) else {
+        guard let value4 = try? awaitPromise(promise4) else {
             XCTFail()
             return
         }
 
-        guard let value5 = try? await(promise5) else {
+        guard let value5 = try? awaitPromise(promise5) else {
             XCTFail()
             return
         }
@@ -350,7 +350,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            let _ = try await(promise)
+            let _ = try awaitPromise(promise)
             XCTFail()
         } catch let error {
             let error = error as NSError
@@ -581,7 +581,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            let result = try await(p)
+            let result = try awaitPromise(p)
             XCTAssertEqual(result, 15)
             expectation.fulfill()
         } catch {
@@ -652,7 +652,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            _ = try await(promise)
+            _ = try awaitPromise(promise)
             XCTFail()
             expectation.fulfill()
         } catch (let e) {
@@ -679,7 +679,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            let response = try await(promise)
+            let response = try awaitPromise(promise)
             XCTAssertEqual(response, 5)
             expectation.fulfill()
         } catch {
@@ -750,7 +750,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            _ = try await(promise)
+            _ = try awaitPromise(promise)
             XCTFail()
         } catch (let e) {
             XCTAssertEqual(error.domain, (e as NSError).domain)
@@ -794,7 +794,7 @@ class Tests: XCTestCase {
         }
 
         do {
-            let response = try await(promise)
+            let response = try awaitPromise(promise)
             XCTAssertEqual(response, 15)
             expectation.fulfill()
         } catch {
