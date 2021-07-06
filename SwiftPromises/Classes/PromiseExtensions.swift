@@ -3,7 +3,7 @@
 //  SwiftPromises
 //
 //  Created by Wyatt Mufson on 6/16/19.
-//  Copyright © 2020 Ryu Blockchain Technologies. All rights reserved.
+//  Copyright © 2021 Ryu Games. All rights reserved.
 //
 
 import Foundation
